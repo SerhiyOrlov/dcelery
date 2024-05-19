@@ -22,6 +22,11 @@ services:
     container_name: celery
     build:
       context: ./app
+    # Run celery worker
+    # --app - A django app where celery.py is lcated
+    # -l INFO - Setting the loging level
+    # Options: DEBUG | INFO | WARNING | ERROR | CRITICAL | FATAL
+    command: celery --app=cworker worker -l INFO
     volumes:
       - ./app:/usr/src/app/
     env_file:
