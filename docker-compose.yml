@@ -5,7 +5,7 @@ services:
     image: redis:7.0.11-alpine
 
   django:
-    container_name: django
+    container_name: dcelery-django
     build:
       context: ./app
     command: python manage.py runserver 0.0.0.0:8000
@@ -19,7 +19,7 @@ services:
       - redis
 
   celery:
-    container_name: celery1
+    container_name: dcelery-celery1
     build:
       context: ./app
       dockerfile: Dockerfile
