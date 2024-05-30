@@ -1,4 +1,3 @@
-
 ### Executing a task
     tp1.delay()
 
@@ -14,4 +13,5 @@ from cworker.tasks import tp1, tp2, tp3, tp4
     task_chain = chain(tp1.s(), tp2.s(), tp3.s()) -- Set the chain.
     task_chain.apply_async() -- Run the chain.
 
-
+### Task rate limit setting
+    app.conf.task_default_rate_limit = "1/m" -- Execute one task in 1 minute

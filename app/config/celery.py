@@ -7,6 +7,7 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 # app.conf.task_routes = {"cworker.tasks.*": {"queue": "queue1"},
 #                         "cworker.tasks.task2": {"queue": "queue2"},
 # 						}
+app.conf.task_default_rate_limit = "1/m"
 app.conf.broker_transport_options = {
 	"priority_steps": list(range(10)),
 	'sep': ":",
