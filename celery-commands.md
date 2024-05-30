@@ -29,18 +29,43 @@ from cworker.tasks import tp1, tp2, tp3, tp4
     app.conf.worker_prefetch_multiplier = 1
 
 ### Set the worker concurrency
-    The "app.conf.worker_concurrency" parameter determines the number of threads, which the worker will use for the task compliting
+    The "app.conf.worker_concurrency" parameter determines the number of threads, which the worker will use for the task compliting.
     app.conf.worker_concurrency = 1 
 
 ### Prioritization of the tasks
-from config.celery import *
-t2.apply_async(priority=5)
-t1.apply_async(priority=6)
-t3.apply_async(priority=9)
-t1.apply_async(priority=6)
-t2.apply_async(priority=5)
-t3.apply_async(priority=9)
+    from config.celery import *
+    t2.apply_async(priority=5)
+    t1.apply_async(priority=6)
+    t3.apply_async(priority=9)
+    t1.apply_async(priority=6)
+    t2.apply_async(priority=5)
+    t3.apply_async(priority=9)
 
 ### Ispect task(Run on Django)
     celery inspect active
     celery inspect active_queues
+
+### Provide the positional and keywoards arguments to the task
+    Task example:
+    -----------------------------------
+    @app.task()
+    def t1(a, b, message=None):
+        result = a + b
+        if message:
+            result = f"{message}: {result}"
+        return result
+    ------------------------------------
+    Execution of the task:
+    ------------------------------------
+
+    t1.apply_async(args=[5,10], kwargs={"message": "The sum is"})
+
+    ------------------------------------
+    Actions with the task object:
+    ------------------------------------
+    task_object = t1.apply_async(args=[5,10], kwargs={"message": "The sum is"}) - Save task object to the variable.
+        task_object.ready() - Checks whether the task is completed or not.
+        task_object.successful() - Checks whether the task was completed without errors.
+        task_object.get() - Get the result of the task.
+        task_object.getResult() = Returns if the task has completed successfully.
+        task_object.get(propagate=False) = Returns if the exception or error.

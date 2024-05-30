@@ -14,31 +14,45 @@ app.conf.task_queues = [
 
 app.conf.task_acks_late = True
 
-# When the priority of tasks wasn't setted up manually, their priority will be 5.
 app.conf.task_default_priority = 5
 
-# "Prefetching" allows the worker to receive tasks before they will be processed.
-# When "worker_prefetch_multiplier" equals "1" the worker will receive a new task only after handling the previous one.
-# That allows us to avoid the situation when one or few tasks are stuck in the worker, who can't handle it at the time.
 app.conf.worker_prefetch_multiplier = 1
 
-# The "app.conf.worker_concurrency" parameter determines the number of threads, which the worker will use for the task compliting
 app.conf.worker_concurrency = 1
 
 @app.task(queue='tasks')
-def t1():
-    time.sleep(3)
-    return
+def t1(a, b, message=None):
+    result = a + b
+    if message:
+        result = f"{message}: {result}"
+    return result
 
-@app.task(queue='tasks')
-def t2():
-    time.sleep(3)
-    return
+def test():
+    result = t1.apply_async(args=[5,10], kwargs={"message":"The sum is"})
 
-@app.task(queue='tasks')
-def t3():
-    time.sleep(3)
-    return
+    # Check is the task has completed
+    if result.ready():
+        print("Task has completed")
+    else:
+        print("Task is still running")
+
+    #Check if the task completed successfully
+    if result.successful():
+        print("Task completed successfully")
+    else:
+        print("Task encountered an error")
+
+    # Fet the result of the task
+    try:
+        task_result = result.get()
+        print(f"Task result: {task_result}")
+    except Exception as e:
+        print(f"An exception occured: {e}")
+
+    # Get the exception (if any) that occurred during task execution
+    exception = result.get(propagate=False)
+    if exception:
+        print(f"An exception occurred during task execution {exception}")
 
 # app.conf.task_routes = {"cworker.tasks.*": {"queue": "queue1"},
 #                         "cworker.tasks.task2": {"queue": "queue2"},
