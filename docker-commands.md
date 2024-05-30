@@ -9,3 +9,11 @@
     Key "-i" is for using keyboard. 
 
     docker exec -it django /bin/sh
+
+### Clean up docker
+    key "-a" - Show all containers (default shows just running)
+    key "-q" - Only display container IDs
+
+    docker stop $(docker ps -aq) && docker rm $(docker ps -aq)  && docker rmi $(docker images -aq)
+
+
